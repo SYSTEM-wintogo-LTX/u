@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LTX的小破站</title>
+  <style>
+    /* 基础样式设置 */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f6fa; /* 浅灰色背景 */
+      color: #3d4852; /* 深灰色文字 */
+      line-height: 1.6;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 页面滚动进度条 */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background-color: #6574cd; /* 紫蓝色进度条 */
+      z-index: 1000;
+      transition: width 0.3s ease;
+    }
+
+    /* 主容器 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 页面头部 */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    header img:hover {
+      transform: scale(1.05); /* 悬停时图片放大效果 */
+    }
+    header h1 {
+      margin: 10px 0 5px;
+      font-size: 2em;
+      color: #3d4852; /* 深灰色文字 */
+    }
+    header p {
+      margin: 5px 0;
+      color: #a0aec0; /* 浅灰色文字 */
+    }
+
+    /* 内容区块 */
+    .section {
+      background-color: #ffffff; /* 白色背景 */
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+    .section h2 {
+      margin-bottom: 10px;
+      font-size: 1.5em;
+      color: #3d4852; /* 深灰色文字 */
+    }
+    .section p {
+      margin-bottom: 10px;
+      color: #3d4852; /* 深灰色文字 */
+    }
+
+    /* 联系方式部分 */
+    .contact-info ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .contact-info li {
+      margin-bottom: 10px;
+    }
+    .contact-info a {
+      color: #6574cd; /* 紫蓝色链接 */
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .contact-info a:hover {
+      text-decoration: underline;
+      color: #4c51bf; /* 更深的紫蓝色 */
+    }
+
+    /* 项目展示部分 */
+    .projects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .project-card {
+      background-color: #ffffff; /* 白色背景 */
+      border: 1px solid #e2e8f0; /* 浅灰色边框 */
+      border-radius: 8px;
+      overflow: hidden;
+      width: calc(33.333% - 20px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+    .project-card:hover {
+      transform: translateY(-5px); /* 悬停时卡片上移 */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .project-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: filter 0.3s ease;
+    }
+    .project-card img:hover {
+      filter: brightness(1.1); /* 悬停时图片亮度增加 */
+    }
+    .project-card-content {
+      padding: 15px;
+    }
+    .project-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.2em;
+      color: #3d4852; /* 深灰色文字 */
+    }
+    .project-card p {
+      margin: 0;
+      color: #3d4852; /* 深灰色文字 */
+    }
+
+    /* 链接卡片部分 */
+    .links-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .link-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+    .link-card:hover {
+      transform: translateY(-5px); /* 悬停时卡片上移 */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .link-card a {
+      display: block;
+      padding: 15px;
+      text-decoration: none;
+      color: #3d4852;
+    }
+    .link-card .link-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .link-card .link-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .link-card .link-description {
+      font-size: 0.9em;
+      color: #a0aec0;
+    }
+
+    /* 天气和时间显示 */
+    .weather-time-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      z-index: 1000;
+    }
+
+    /* 页面加载动画 */
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1a202c; /* 深黑色背景 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: opacity 1s ease-in-out;
+    }
+    .loader {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      perspective: 1000px;
+    }
+    .loader div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #6574cd, #ff79c6);
+      animation: spin 2s infinite linear both;
+      transform-origin: 50% 50%;
+      clip-path: polygon(50% 0%, 75% 0%, 100% 50%, 75% 100%, 50% 100%, 25% 100%, 0% 50%, 25% 0%);
+    }
+    @keyframes spin {
+      from {
+        transform: rotateY(0deg);
+      }
+      to {
+        transform: rotateY(360deg);
+      }
+    }
+
+    /* 倒计时和统计信息 */
+    .countdown-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      z-index: 1000;
+    }
+    .countdown-item {
+      margin-bottom: 5px;
+      color: #3d4852; /* 深灰色文字 */
+      font-weight: bold;
+    }
+    .countdown-number {
+      font-size: 1.2em;
+      color: #6574cd; /* 紫蓝色数字 */
+    }
+    .countdown-time {
+      font-size: 0.9em;
+      color: #6574cd; /* 查询时间样式 */
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .project-card {
+        width: calc(50% - 20px); /* 平板视图，每行显示2个项目卡片 */
+      }
+    }
+    @media (max-width: 480px) {
+      .project-card {
+        width: 100%; /* 手机视图，每行显示1个项目卡片 */
+      }
+      .links-container {
+        grid-template-columns: 1fr; /* 手机视图，链接卡片垂直排列 */
+      }
+      .countdown-container, .weather-time-container {
+        display: none; /* 手机视图，隐藏底部统计信息 */
+      }
+    }
+
+    /* 全局过渡动画 */
+    * {
+      transition: all 0.3s ease; /* 所有元素添加平滑过渡效果 */
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="loader-container" id="loaderContainer">
+    <div class="loader">
+      <div></div>
+    </div>
+  </div>
+
+  <!-- 页面滚动进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主内容容器 -->
+  <div class="container">
+    <!-- 页面头部 -->
+    <header>
+      <img src="https://www.liu.ct.ws/wp-content/uploads/2025/03/result.jpeg" alt="头像">
+      <h1>LTX</h1>
+      <p>计算机爱好者 | 热爱编程与设计</p>
+    </header>
+
+    <!-- 关于我部分 -->
+    <div class="section">
+      <h2>关于我</h2>
+      <p>我是一个来自广东揭阳的中学生，喜欢写html，普新科技工作室的领导人</p>
+      <p>我在过去的几年中参与了许多有趣的项目，如html项目。我热爱解决问题和创造用户友好的界面。</p>
+    </div>
+
+    <!-- 联系方式部分 -->
+    <div class="section contact-info">
+      <h2>联系方式</h2>
+      <ul>
+        <li><strong>Email:</strong> ltx385158091@outlook.com</li>
+        <li><strong>电话:</strong> 想什么呢</li>
+        <li><strong>博客:</strong> <a href="https://liu.ct.ws" target="_blank">Liu-博客</a></li>
+        <li><strong>Github:</strong> <a href="https://github.com/SYSTEM-wintogo-LTX/" target="_blank">ltx的GitHub</a></li>
+      </ul>
+    </div>
+
+    <!-- 我的链接部分 -->
+    <div class="section">
+      <h2>我的链接</h2>
+      <p>这里展示了我经常推荐和自己写的的一些网站和资源</p>
+      <div class="links-container">
+        <div class="link-card">
+          <a href="https://github.com" target="_blank">
+            <img class="link-icon" src="https://img-blog.csdnimg.cn/img_convert/e402c43e8cf6e6155792f2355e4fb790.png" alt="GitHub图标">
+            <div class="link-title">GitHub</div>
+            <div class="link-description">开源代码托管平台</div>
+          </a>
+        </div>
+        <div class="link-card">
+          <a href="https://xiaomu.ct.ws/muyu" target="_blank">
+            <img class="link-icon" src="https://tse3-mm.cn.bing.net/th/id/OIP-C.9PWHLyNhRtCg9HtdKIqmngAAAA?cb=iwc2&rs=1&pid=ImgDetMain" alt="赛博木鱼图标">
+            <div class="link-title">赛博木鱼</div>
+            <div class="link-description">解压游戏</div>
+          </a>
+        </div>
+        <div class="link-card">
+          <a href="https://xiaomu.ct.ws/jsq" target="_blank">
+            <img class="link-icon" src="https://tse2-mm.cn.bing.net/th/id/OIP-C.nfFu7l8TPI6fnX5Fb8bJ_QHaHa?cb=iwc2&rs=1&pid=ImgDetMain" alt="计算器图标">
+            <div class="link-title">计算器</div>
+            <div class="link-description">iPhone计算器</div>
+          </a>
+        </div>
+        <div class="link-card">
+          <a href="https://www.figma.com" target="_blank">
+            <img class="link-icon" src="https://www.liu.ct.ws/wp-content/uploads/2025/03/result.jpeg" alt="Figma图标">
+            <div class="link-title">Figma</div>
+            <div class="link-description">协作式界面设计工具</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我的项目部分 -->
+    <div class="section projects">
+      <h2>我的项目</h2>
+      <div class="project-card">
+        <img src="https://www.liu.ct.ws/wp-content/uploads/2025/03/result.jpeg" alt="项目1">
+        <div class="project-card-content">
+          <h3>项目1</h3>
+          <p>待介绍</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://www.liu.ct.ws/wp-content/uploads/2025/03/result.jpeg" alt="项目2">
+        <div class="project-card-content">
+          <h3>项目2</h3>
+          <p>待介绍</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://www.liu.ct.ws/wp-content/uploads/2025/03/result.jpeg" alt="项目3">
+        <div class="project-card-content">
+          <h3>项目3</h3>
+          <p>待介绍</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右下角当前时间显示 -->
+  <div class="weather-time-container" id="weatherTimeContainer">
+    <div id="currentTime"></div>
+  </div>
+
+  <!-- 左下角倒计时和统计信息 -->
+  <div class="countdown-container" id="countdownContainer">
+    <div class="countdown-item"><span class="countdown-label">今年还剩</span> <span class="countdown-number" id="daysLeftInYear">XX</span> 天</div>
+    <div class="countdown-item"><span class="countdown-label">今年还剩</span> <span class="countdown-number" id="weeksLeftInYear">XX</span> 周</div>
+    <div class="countdown-item"><span class="countdown-label">今年还剩</span> <span class="countdown-number" id="minutesLeftInYear">XX</span> 分钟</div>
+    <div class="countdown-item"><span class="countdown-label">本站已运行</span> <span class="countdown-number" id="siteRunningTime">XX</span> 天</div>
+    <div class="countdown-item"><span class="countdown-label">今日查询</span> <span class="countdown-number" id="queryCount">XX</span> 次 <span class="countdown-time" id="queryTime">XX</span></div>
+  </div>
+
+  <script>
+    // 页面加载完成后执行
+    window.onload = function() {
+      // 显示页面内容（从透明到不透明）
+      document.body.style.opacity = 1;
+      
+      // 隐藏加载动画
+      const loaderContainer = document.getElementById('loaderContainer');
+      loaderContainer.style.opacity = 0;
+      setTimeout(() => {
+        loaderContainer.style.display = 'none';
+      }, 1000);
+
+      // 设置网站上线日期（修改为2025年5月11号00:00分）
+      const siteLaunchDate = new Date(2025, 4, 11, 0, 0, 0, 0);
+      updateSiteRunningTime(siteLaunchDate);
+      
+      // 初始化或更新查询次数和时间
+      initializeQueryCount();
+      
+      // 更新当前时间和倒计时
+      updateTime();
+      updateFullCountdown();
+      
+      // 设置定时器，定期更新时间和统计信息
+      setInterval(updateTime, 1000); // 每秒更新一次时间
+      setInterval(updateFullCountdown, 1000); // 每秒更新一次倒计时
+      setInterval(() => updateSiteRunningTime(siteLaunchDate), 1000); // 每秒更新一次运行时间
+    };
+
+    // 更新页面滚动进度条
+    window.addEventListener('scroll', function() {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercentage = (scrollTop / scrollHeight) * 100;
+      document.getElementById('progressBar').style.width = scrollPercentage + '%';
+    });
+
+    // 更新当前时间显示
+    function updateTime() {
+      const currentTimeElement = document.getElementById('currentTime');
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      currentTimeElement.textContent = `当前时间: ${timeString}`;
+    }
+
+    // 更新详细的倒计时（距离年底剩余时间）
+    function updateFullCountdown() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
+      const timeDifference = endOfYear - now;
+
+      // 如果已经到了年底，显示0
+      if (timeDifference <= 0) {
+        document.getElementById('daysLeftInYear').textContent = "0";
+        document.getElementById('weeksLeftInYear').textContent = "0";
+        document.getElementById('minutesLeftInYear').textContent = "0";
+        return;
+      }
+
+      // 计算剩余天数、周数和分钟数
+      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const weeks = Math.floor(days / 7);
+      const minutes = Math.floor(timeDifference / (1000 * 60));
+
+      // 更新DOM显示
+      document.getElementById('daysLeftInYear').textContent = days;
+      document.getElementById('weeksLeftInYear').textContent = weeks;
+      document.getElementById('minutesLeftInYear').textContent = minutes;
+    }
+
+    // 更新网站运行时间（精确到秒）
+    function updateSiteRunningTime(launchDate) {
+      const now = new Date();
+      const timeDifference = now - launchDate;
+      
+      // 计算运行的天数、小时、分钟和秒
+      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+      
+      // 更新DOM显示
+      document.getElementById('siteRunningTime').textContent = 
+        `${days} 天 ${hours} 时 ${minutes} 分 ${seconds} 秒`;
+    }
+
+    // 初始化或更新查询次数和时间
+    function initializeQueryCount() {
+      // 从localStorage获取今天的查询记录
+      const today = new Date().toDateString();
+      const storedDate = localStorage.getItem('queryDate');
+      const storedCount = localStorage.getItem('queryCount');
+      
+      if (storedDate === today && storedCount) {
+        // 如果有今天的记录，增加计数并更新显示
+        const count = parseInt(storedCount) + 1;
+        localStorage.setItem('queryCount', count);
+        document.getElementById('queryCount').textContent = count;
+        
+        // 更新查询时间，精确到毫秒
+        const now = new Date();
+        const timeString = now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().padStart(3, '0');
+        document.getElementById('queryTime').textContent = timeString;
+      } else {
+        // 如果没有今天的记录，重置计数为1
+        localStorage.setItem('queryDate', today);
+        localStorage.setItem('queryCount', '1');
+        document.getElementById('queryCount').textContent = '1';
+        
+        // 记录首次查询时间
+        const now = new Date();
+        const timeString = now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().padStart(3, '0');
+        document.getElementById('queryTime').textContent = timeString;
+      }
+    }
+  </script>
+</body>
+</html>
